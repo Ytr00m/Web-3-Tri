@@ -1,4 +1,4 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, QueryDict
 from django.shortcuts import get_object_or_404
 from django.views import View
 
@@ -23,18 +23,29 @@ class ContatoView(View):
         c.nome = request.POST.get("nome")
         c.telefone = request.POST.get("telefone")
         c.email = request.POST.get("email")
-
+        print(request.POST)
         try:
             c.save()
-            return JsonResponse({"salvo:OK"})
+            return JsonResponse({"salvo":"OK"})
         
+        except Exception as e:
+            print(e)
+            return JsonResponse({"salvo":"erro"})
+
+    def put(self, request, id):
+        dados = QueryDict(request.body)
+        c = get_object_or_404(Contato, pk=id)
+
+        c.nome = dados.get("nome", c.nome)
+        c.telefone = dados.get("telefone", c.telefone)
+        c.email = dados.get("email", c.email)
+        try:
+            c.save()
+            return JsonResponse({"atualizado": "OK"})
         except:
-            return JsonResponse({"salvo:erro"})
+            return JsonResponse({"atualizado": "Erro"})
 
-    def put(self, request):
-        pass
-
-    def delete(self, request):
+    def delete(self, request, id):
         c = get_object_or_404(Contato, pk=id)
         c.delete
         return JsonResponse({

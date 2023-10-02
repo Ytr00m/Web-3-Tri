@@ -19,5 +19,6 @@ from django.urls import path
 from AulaWeb.views.api.contatos import ContatoView
 
 urlpatterns = [
+    path('api/v1/contatos/<id>', ContatoView.as_view()),
     path('api/v1/contatos', ContatoView.as_view()),
 ]
